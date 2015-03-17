@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SentimentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Posts">
+          <Key>
+            <PropertyRef Name="PostId" />
+          </Key>
+          <Property Name="PostId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PostType" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PostTypes">
+          <Key>
+            <PropertyRef Name="PostTypeId" />
+          </Key>
+          <Property Name="PostTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sentiments">
+          <Key>
+            <PropertyRef Name="SentimentId" />
+          </Key>
+          <Property Name="SentimentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PostId" Type="int" Nullable="false" />
+          <Property Name="SentimentTypeId" Type="int" Nullable="false" />
+          <Property Name="Score" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SentimentTypes">
+          <Key>
+            <PropertyRef Name="SentimentTypeId" />
+          </Key>
+          <Property Name="SentimentTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MaxScore" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserPosts">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="PostId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PostId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Email" Type="nchar" MaxLength="256" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Posts_PostTypes">
+          <End Role="PostTypes" Type="Self.PostTypes" Multiplicity="1" />
+          <End Role="Posts" Type="Self.Posts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostTypes">
+              <PropertyRef Name="PostTypeId" />
+            </Principal>
+            <Dependent Role="Posts">
+              <PropertyRef Name="PostType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sentiments_Posts">
+          <End Role="Posts" Type="Self.Posts" Multiplicity="1" />
+          <End Role="Sentiments" Type="Self.Sentiments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Posts">
+              <PropertyRef Name="PostId" />
+            </Principal>
+            <Dependent Role="Sentiments">
+              <PropertyRef Name="PostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sentiments_SentimentTypes">
+          <End Role="SentimentTypes" Type="Self.SentimentTypes" Multiplicity="1" />
+          <End Role="Sentiments" Type="Self.Sentiments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SentimentTypes">
+              <PropertyRef Name="SentimentTypeId" />
+            </Principal>
+            <Dependent Role="Sentiments">
+              <PropertyRef Name="SentimentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPosts_Posts">
+          <End Role="Posts" Type="Self.Posts" Multiplicity="1" />
+          <End Role="UserPosts" Type="Self.UserPosts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Posts">
+              <PropertyRef Name="PostId" />
+            </Principal>
+            <Dependent Role="UserPosts">
+              <PropertyRef Name="PostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPosts_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserPosts" Type="Self.UserPosts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserPosts">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SentimentModelStoreContainer">
+          <EntitySet Name="Posts" EntityType="Self.Posts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PostTypes" EntityType="Self.PostTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sentiments" EntityType="Self.Sentiments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SentimentTypes" EntityType="Self.SentimentTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPosts" EntityType="Self.UserPosts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Posts_PostTypes" Association="Self.FK_Posts_PostTypes">
+            <End Role="PostTypes" EntitySet="PostTypes" />
+            <End Role="Posts" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sentiments_Posts" Association="Self.FK_Sentiments_Posts">
+            <End Role="Posts" EntitySet="Posts" />
+            <End Role="Sentiments" EntitySet="Sentiments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sentiments_SentimentTypes" Association="Self.FK_Sentiments_SentimentTypes">
+            <End Role="SentimentTypes" EntitySet="SentimentTypes" />
+            <End Role="Sentiments" EntitySet="Sentiments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPosts_Posts" Association="Self.FK_UserPosts_Posts">
+            <End Role="Posts" EntitySet="Posts" />
+            <End Role="UserPosts" EntitySet="UserPosts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPosts_Users" Association="Self.FK_UserPosts_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserPosts" EntitySet="UserPosts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SentimentModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SentimentEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Posts" EntityType="SentimentModel.Post" />
+          <EntitySet Name="PostTypes" EntityType="SentimentModel.PostType" />
+          <EntitySet Name="Sentiments" EntityType="SentimentModel.Sentiment" />
+          <EntitySet Name="SentimentTypes" EntityType="SentimentModel.SentimentType" />
+          <EntitySet Name="Users" EntityType="SentimentModel.User" />
+          <AssociationSet Name="FK_Posts_PostTypes" Association="SentimentModel.FK_Posts_PostTypes">
+            <End Role="PostType" EntitySet="PostTypes" />
+            <End Role="Post" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sentiments_Posts" Association="SentimentModel.FK_Sentiments_Posts">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="Sentiment" EntitySet="Sentiments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sentiments_SentimentTypes" Association="SentimentModel.FK_Sentiments_SentimentTypes">
+            <End Role="SentimentType" EntitySet="SentimentTypes" />
+            <End Role="Sentiment" EntitySet="Sentiments" />
+          </AssociationSet>
+          <AssociationSet Name="UserPosts" Association="SentimentModel.UserPosts">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="PostId" />
+          </Key>
+          <Property Name="PostId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PostType" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PostType1" Relationship="SentimentModel.FK_Posts_PostTypes" FromRole="Post" ToRole="PostType" />
+          <NavigationProperty Name="Sentiments" Relationship="SentimentModel.FK_Sentiments_Posts" FromRole="Post" ToRole="Sentiment" />
+          <NavigationProperty Name="Users" Relationship="SentimentModel.UserPosts" FromRole="Post" ToRole="User" />
+        </EntityType>
+        <EntityType Name="PostType">
+          <Key>
+            <PropertyRef Name="PostTypeId" />
+          </Key>
+          <Property Name="PostTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Posts" Relationship="SentimentModel.FK_Posts_PostTypes" FromRole="PostType" ToRole="Post" />
+        </EntityType>
+        <EntityType Name="Sentiment">
+          <Key>
+            <PropertyRef Name="SentimentId" />
+          </Key>
+          <Property Name="SentimentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PostId" Type="Int32" Nullable="false" />
+          <Property Name="SentimentTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Score" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="SentimentModel.FK_Sentiments_Posts" FromRole="Sentiment" ToRole="Post" />
+          <NavigationProperty Name="SentimentType" Relationship="SentimentModel.FK_Sentiments_SentimentTypes" FromRole="Sentiment" ToRole="SentimentType" />
+        </EntityType>
+        <EntityType Name="SentimentType">
+          <Key>
+            <PropertyRef Name="SentimentTypeId" />
+          </Key>
+          <Property Name="SentimentTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaxScore" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Sentiments" Relationship="SentimentModel.FK_Sentiments_SentimentTypes" FromRole="SentimentType" ToRole="Sentiment" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="256" FixedLength="true" Unicode="true" />
+          <Property Name="PasswordHash" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Posts" Relationship="SentimentModel.UserPosts" FromRole="User" ToRole="Post" />
+        </EntityType>
+        <Association Name="FK_Posts_PostTypes">
+          <End Type="SentimentModel.PostType" Role="PostType" Multiplicity="1" />
+          <End Type="SentimentModel.Post" Role="Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostType">
+              <PropertyRef Name="PostTypeId" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="PostType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sentiments_Posts">
+          <End Type="SentimentModel.Post" Role="Post" Multiplicity="1" />
+          <End Type="SentimentModel.Sentiment" Role="Sentiment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="PostId" />
+            </Principal>
+            <Dependent Role="Sentiment">
+              <PropertyRef Name="PostId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sentiments_SentimentTypes">
+          <End Type="SentimentModel.SentimentType" Role="SentimentType" Multiplicity="1" />
+          <End Type="SentimentModel.Sentiment" Role="Sentiment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SentimentType">
+              <PropertyRef Name="SentimentTypeId" />
+            </Principal>
+            <Dependent Role="Sentiment">
+              <PropertyRef Name="SentimentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserPosts">
+          <End Type="SentimentModel.Post" Role="Post" Multiplicity="*" />
+          <End Type="SentimentModel.User" Role="User" Multiplicity="*" />
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SentimentModelStoreContainer" CdmEntityContainer="SentimentEntities">
+          <EntitySetMapping Name="Posts">
+            <EntityTypeMapping TypeName="SentimentModel.Post">
+              <MappingFragment StoreEntitySet="Posts">
+                <ScalarProperty Name="PostType" ColumnName="PostType" />
+                <ScalarProperty Name="PostId" ColumnName="PostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostTypes">
+            <EntityTypeMapping TypeName="SentimentModel.PostType">
+              <MappingFragment StoreEntitySet="PostTypes">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PostTypeId" ColumnName="PostTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sentiments">
+            <EntityTypeMapping TypeName="SentimentModel.Sentiment">
+              <MappingFragment StoreEntitySet="Sentiments">
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="SentimentTypeId" ColumnName="SentimentTypeId" />
+                <ScalarProperty Name="PostId" ColumnName="PostId" />
+                <ScalarProperty Name="SentimentId" ColumnName="SentimentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SentimentTypes">
+            <EntityTypeMapping TypeName="SentimentModel.SentimentType">
+              <MappingFragment StoreEntitySet="SentimentTypes">
+                <ScalarProperty Name="MaxScore" ColumnName="MaxScore" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SentimentTypeId" ColumnName="SentimentTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SentimentModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="UserPosts" TypeName="SentimentModel.UserPosts" StoreEntitySet="UserPosts">
+            <EndProperty Name="User">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="Post">
+              <ScalarProperty Name="PostId" ColumnName="PostId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
